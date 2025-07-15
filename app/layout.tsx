@@ -4,8 +4,13 @@ import "./globals.css";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
-import Navbar from "@/components/Navbar";
+
 import { SessionProvider } from "next-auth/react";
+
+
+import { Provider } from 'react-redux';
+import store from "@/redux/store";
+import ClientNavbarWrapper from "@/components/ClientNavbarWrapper";
 
 
 
@@ -50,8 +55,11 @@ export default function RootLayout({
            */
           routerConfig={extractRouterConfig(ourFileRouter)}
         />
-        <Navbar />
+         <Provider store={store}>
+        <ClientNavbarWrapper />
+     
         {children}
+        </Provider>
       </body>
       </SessionProvider>
     </html>

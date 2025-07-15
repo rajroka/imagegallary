@@ -25,6 +25,12 @@ const publicLinks = [
     icon: FaSignInAlt,
     action: 'signin', // 🔑 special flag for handling auth
   } as const,
+   {
+    name: 'Login',
+    route: '/Login',
+    icon: FaSignInAlt,
+    action: 'login', // 🔑 special flag for handling auth
+  } as const,
 ] as const;
 
 const privateLinks = [
