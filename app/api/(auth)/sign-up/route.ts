@@ -1,32 +1,34 @@
-import { PrismaClient } from "@/app/generated/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-import {z } from "zod";
+import { z } from "zod";
+import connectToDatabase from "@/lib/db";  // your mongoose connection helper
+import User from "@/lib/models/User";      // your Mongoose User model
 
-
-const prisma = new PrismaClient();
 // Zod schema for validating incoming signup data
 const signupSchema = z.object({
-  username: z.string().min(1, "username is required"),
+  name: z.string().min(1, "username is required"),
   email: z.string().email("Invalid email"),
   password: z.string().min(6, "Password must be at least 6 characters long"),
 });
+
 export async function POST(req: NextRequest) {
+
+    await connectToDatabase();
+
   try {
     const body = await req.json();
-    const { username, email, password } = signupSchema.parse(body);
+    const { name, email, password } = signupSchema.parse(body);
 
-    if (!username || !email || !password) {
+    if (!name || !email || !password) {
       return NextResponse.json(
         { message: "All fields are required" },
         { status: 400 }
       );
     }
 
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
-
+  
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
         { message: "Email already exists" },
@@ -34,18 +36,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await prisma.user.create({
-      data: {
-        username,
-        email,
-        password: hashedPassword,
-      },
+    // Create new user document
+    const user = new User({
+      name,
+      email,
+      password: hashedPassword,
     });
 
+     const raj =  await user.save();
+    console.log(raj)
     return NextResponse.json(
-      { message: "User registered successfully", user },
+      { message: "User registered successfully", user: { id: user._id, name, email } },
       { status: 201 }
     );
   } catch (error) {

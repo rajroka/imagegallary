@@ -1,9 +1,7 @@
-"use client"
-import React from 'react'
-import Navbar from './Navbar'
+"use client";
 
-const ClientNavbarWrapper = () =>  <Navbar />
+import Navbar from "./Navbar";
 
-
-
-export default ClientNavbarWrapper
+export default function ClientNavbarWrapper() {
+  return <Navbar />;
+}

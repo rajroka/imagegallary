@@ -53,7 +53,7 @@ const removeImage = (index : number)=>{
   }, [previewUrl])
 
   return (
-    <div className="space-y-4 p-4">
+    <div className="space-y-4 p-4    bg-amber-500 ">
       <input type="file" multiple onChange={onChangeFile} ref={inputRef} />
 
       <button onClick={clearFile} className="bg-red-500 text-white px-3 py-1 rounded">

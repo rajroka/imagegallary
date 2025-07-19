@@ -1,3 +1,4 @@
+"use client";
 
 import { create } from 'zustand';
 
@@ -21,4 +22,4 @@ const useModalStore = create<OpenState>((set) => ({
   closeSignup: () => set({ isSignupOpen: false }),
 }));
 
-export  {useModalStore};
+export { useModalStore };

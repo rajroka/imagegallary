@@ -1,10 +1,12 @@
-'use client';
+
 
 import Link from 'next/link';
 import Image from 'next/image';
 import { FaUpload } from 'react-icons/fa';
+const Hero =  () => {
+ 
 
-const Hero = () => {
+
   return (
     <section className="relative w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-purple-100 to-white px-4 py-12">
       <div className="max-w-5xl w-full text-center flex flex-col items-center">

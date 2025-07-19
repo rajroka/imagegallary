@@ -5,25 +5,31 @@ import { usePathname } from 'next/navigation';
 import { useModalStore } from '@/store/useAuthmodal';
 import SignInModal from './SigninModal';
 import LoginModal from './LoginModal';
-import { useSelector  , useDispatch} from 'react-redux';
-import { logout } from '@/redux/slice/authSlice';
+import { useAuthStore } from '@/store/useAuthStore';
+import { signOut, useSession } from 'next-auth/react';
+
+
 const Navbar = () => {
   const path = usePathname();
-   
-         const dispatch = useDispatch()
+     const { data: session, status } = useSession();
+         
   const { openSignup, openLogin, isSignupOpen, isLoginOpen } = useModalStore();
- const { isLoggedIn,    } = useSelector((state : any) => state.auth);
+    const { user   , logout   } = useAuthStore();
+
+
+
+
 
  const Logout = ()=>{
 
-     dispatch(logout()); // 🧠 update Redux state
+
     localStorage.removeItem("token"); // 🧹 optional: remove token from storage
-  
+    logout(); // ✅ update Zustand state
  }
 
   return (
     <>
-      <div className="h-20 bg-white/60 backdrop-blur-sm text-gray-900 shadow w-full px-6 py-3">
+      <div className="h-20 bg-white/60 backdrop-blur-sm  sticky top-0 text-gray-900 shadow w-full px-6 py-3">
         <div className="flex justify-center gap-6 items-center font-medium">
           
           <Link
@@ -46,12 +52,29 @@ const Navbar = () => {
 
 
          {
-          isLoggedIn ? ( <button
-            onClick={Logout}
+          session ? ( <>
+           <div className="flex items-center gap-2">
+                  
+                  <Link
+                    href="/pro"
+                    className="text-blue-600 hover:underline"
+                  >
+                    <span className="text-gray-700">👤 {user?.name || 'Profile'}</span>
+                  </Link>
+                </div>
+          
+          
+          <button
+            onClick={()=>signOut({callbackUrl: "/"})}
             className="px-4 py-2 rounded-xl text-gray-700 hover:bg-gray-100 hover:text-black transition-colors duration-300"
           >
             Logout 
-          </button> ) :
+          </button>
+             
+           
+
+
+          </>  ) :
           (<>
              <button
             onClick={openLogin}

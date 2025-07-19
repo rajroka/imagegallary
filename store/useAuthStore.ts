@@ -1,22 +1,45 @@
 // store/useAuthStore.ts
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 type AuthState = {
-  token: string | null
-  setToken: (token: string) => void
-  logout: () => void
-}
+  user: any | null;
+  token: string | null;
+  isLoggedIn: boolean;
+  login: (user: any, token: string) => void;
+  logout: () => void;
+};
 
-export const useAuthStore = create<AuthState>()(
+const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
+      user: null,
       token: null,
-      setToken: (token) => set({ token }),
-      logout: () => set({ token: null }),
+      isLoggedIn: false,
+
+      login: (user, token) =>
+        set(() => ({
+          user,
+          token,
+          isLoggedIn: true,
+        })),
+
+      logout: () =>
+        set(() => ({
+          user: null,
+          token: null,
+          isLoggedIn: false,
+        })),
     }),
     {
-      name: 'auth-storage', // saved in localStorage
+      name: 'auth-storage', // Key in localStorage
+      partialize: (state) => ({
+        user: state.user,
+        token: state.token,
+        isLoggedIn: state.isLoggedIn,
+      }),
     }
   )
-)
+);
+
+export  {useAuthStore};

@@ -1,35 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono  , Inter } from "next/font/google";
+import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
+
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
 
+import Navbar from "@/components/Navbar";
 import { SessionProvider } from "next-auth/react";
 
-
-import { Provider } from 'react-redux';
-import store from "@/redux/store";
-import ClientNavbarWrapper from "@/components/ClientNavbarWrapper";
-
-
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -43,25 +25,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <body className={`${inter.className} ${geistSans.variable} ${geistMono.variable}`}>
+        <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
         <SessionProvider>
-      <body
-        className={inter.className}   >
-           <NextSSRPlugin
-          /**
-           * The `extractRouterConfig` will extract **only** the route configs
-           * from the router to prevent additional information from being
-           * leaked to the client. The data passed to the client is the same
-           * as if you were to fetch `/api/uploadthing` directly.
-           */
-          routerConfig={extractRouterConfig(ourFileRouter)}
-        />
-         <Provider store={store}>
-        <ClientNavbarWrapper />
-     
-        {children}
-        </Provider>
+          <Navbar />
+          {children}
+        </SessionProvider>
       </body>
-      </SessionProvider>
     </html>
   );
 }
